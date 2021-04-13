@@ -17,8 +17,10 @@ public class RudderMessage {
     private String messageId = String.format(Locale.US, "%d-%s", System.currentTimeMillis(), UUID.randomUUID().toString());
     @SerializedName("channel")
     private String channel = "mobile";
+    @SerializedName("tenant")
+    private String tenant = "sbermarket";
     @SerializedName("context")
-    private RudderContext context;
+    private Map<String, Object> contextWithProperties = new HashMap<>();
     @SerializedName("type")
     private String type;
     @SerializedName("action")
@@ -31,8 +33,6 @@ public class RudderMessage {
     private String userId;
     @SerializedName("event")
     private String event;
-    @SerializedName("properties")
-    private Map<String, Object> properties;
     @SerializedName("userProperties")
     private Map<String, Object> userProperties;
     @SerializedName("integrations")
@@ -47,9 +47,11 @@ public class RudderMessage {
     private String groupId;
 
     private transient RudderOption rudderOption;
+    private transient RudderContext context;
+    private transient Map<String, Object> properties;
 
     RudderMessage() {
-        this.context = RudderElementCache.getCachedContext();
+        this.updateContext();
         this.anonymousId = RudderContext.getAnonymousId();
 
         Map<String, Object> traits = context.getTraits();
@@ -71,7 +73,10 @@ public class RudderMessage {
     }
 
     void setProperty(RudderProperty property) {
-        if (property != null) this.properties = property.getMap();
+        if (property != null) {
+            this.properties = property.getMap();
+            this.contextWithProperties.putAll(this.properties);
+        }
     }
 
     void setUserProperty(RudderUserProperty userProperty) {
@@ -191,6 +196,7 @@ public class RudderMessage {
 
     void updateContext() {
         this.context = RudderElementCache.getCachedContext();
+        this.contextWithProperties.putAll(this.context.getMap());
     }
 
     /**

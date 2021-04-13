@@ -314,4 +314,22 @@ public class RudderContext {
 
         return copy;
     }
+
+    public Map<String, Object> getMap() {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("app", this.app);
+        map.put("traits", this.traits);
+        map.put("library", this.libraryInfo);
+        map.put("os", this.osInfo);
+        map.put("screen", this.screenInfo);
+        map.put("userAgent", this.userAgent);
+        map.put("locale", this.locale);
+        map.put("device", this.deviceInfo);
+        map.put("network", this.networkInfo);
+        map.put("timezone", this.timezone);
+        map.put("externalId", this.externalIds);
+
+        return map;
+    }
 }
